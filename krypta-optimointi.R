@@ -1,5 +1,4 @@
-
-##
+## 
 
 source("krypta.R", encoding="utf-8")
 
@@ -15,14 +14,19 @@ for (tt in 1:10) {
 ## Funktio, joka muuntelee kryptaa satunnaisesti
 muuntele  <- function(kr_vanha, pyyrit) {
     kr <- kr_vanha
-    for (tt in 1:runif(1,1,4)) {
+    for (tt in 1:sample(1:4,1)) {
         if (runif(1)<0.05) { # Suurennetaan kryptaa
-            uusi <- runif(1,1,nrow(pyyrit))
+            uusi <- sample(1:nrow(pyyrit),1)
             kr <- rbind(kr, pyyrit[uusi,])
         } else {
-            pois <- runif(1,1,nrow(kr))
-            uusi <- runif(1,1,nrow(pyyrit))
-            kr[pois,] <- pyyrit[uusi,]
+            if (nrow(kr)>12 && runif(1)<0.05) { # Otetaan kryptasta pois
+                pois <- sample(1:nrow(kr),1)
+                kr <- kr[-pois,]
+            } else {
+                pois <- sample(1:nrow(kr),1)
+                uusi <- sample(1:nrow(pyyrit),1)
+                kr[pois,] <- pyyrit[uusi,]
+            }
         }
     }
     return(kr)
@@ -38,11 +42,9 @@ for (tt in 1:50) {
     kaikki <- c(haastajat, parhaat)
     hyvyydet  <- numeric(length(kaikki))
     for (ss in 1:length(kaikki)) {
-        for (kk in 1:10) { ## Monia simuloituja nostoja
-            koe <- sample(1:nrow(kaikki[[ss]]), 12)
-            hyvyydet[ss] <- hyvyydet[ss] + kryptan_hyvyys(kaikki[[ss]][koe,])
-        }
+        hyvyydet[ss] <- kryptan_hyvyys(kaikki[[ss]], 10)
     }
-    kaikki <- kaikki[order(hyvyydet)]
+    kaikki <- kaikki[order(hyvyydet, decreasing=TRUE)]
+    print(hyvyydet[order(hyvyydet, decreasing=TRUE)])
     parhaat <- kaikki[1:10]
 }

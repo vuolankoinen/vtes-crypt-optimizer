@@ -22,4 +22,9 @@ krypta <- rbind(krypta, data.frame("name"="Muaziz","cap"=7,"aus"=1,"dom"=1,"nec"
 krypta <- rbind(krypta, data.frame("name"="Blackhorse Tanner","cap"=7,"aus"=2,"dom"=2,"nec"=0,"pre"=0,"pro"=0,"tha"=0,"BH"=1,"title"=0,"special"=1))
 krypta <- rbind(krypta, data.frame("name"="Carna","cap"=7,"aus"=2,"dom"=2,"nec"=0,"pre"=0,"pro"=0,"tha"=2,"BH"=0,"title"=1,"special"=1))
 
+krypta <- rbind(krypta, data.frame("name"="Kurt Strauss","cap"=5,"aus"=1,"dom"=2,"nec"=0,"pre"=0,"pro"=0,"tha"=1,"BH"=0,"title"=0,"special"=0))
+
+
+krypta <- rbind(krypta, data.frame("name"="Anarch Convert","cap"=1,"aus"=0,"dom"=0,"nec"=0,"pre"=0,"pro"=0,"tha"=0,"BH"=0,"title"=0,"special"=0.2))
+
 
