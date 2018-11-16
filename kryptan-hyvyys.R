@@ -1,16 +1,34 @@
-## Aloituskryptien arvioinnin kriteeri
-
 kryptan_hyvyys <- function(krypta, n=10) {
-    tulos <- 0
-    for (kk in 1:n) { ## Monia simuloituja nostoja
-        koe <- sample(1:nrow(krypta), 12)
-        kr <- krypta[koe,]
-        { # Varsinainen arviointi
-            tulos <- tulos + sum(kr[1:4, "dom"])
-            tulos <- tulos - sum(kr[1:4, "cap"])/3
-            if (sum(kr[1:4,"BH"])==0) {tulos  <- tulos-10}
-            if (sum(kr[1:4,"nec"])==0) {tulos  <- tulos-10}
+  ## Puuttuu: tittelit, tarkemmat capacity-arvot
+  tulos <- 0
+  for (kk in 1:n) { ## Monia simuloituja nostoja
+    koe <- sample(1:nrow(krypta), 12)
+    kr <- krypta[koe,]
+    ekat_4 <- unique(kr[1:4,]) # Tuplat eivät auta
+    ekat_4 <- kr[1:4,]
+    { # Varsinainen arviointi
+      tulos <- tulos + sum(10-ekat_4[, "cap"]) # Pienemmät on parempia
+      tulos <- tulos + sum(ekat_4[, "dom"]) # Enemmän domia on parempi
+      tulos <- tulos + length(which(ekat_4[, "dom"]!=0)) # Ylipäätään dom
+      tulos <- tulos + sum(ekat_4[, "tha"])*0.75  # Enemmän thaa on parempi
+      tulos <- tulos + length(which(ekat_4[, "tha"]!=0))*0.75 # Ylipäätään tha
+      if (sum(ekat_4[,"BH"])==0) { # Ei Black Handiä: haitta kuin kolme pyyriä ilman domia
+        tulos  <- tulos-9
+        if (kr[5,"BH"]==0) tulos <- tulos - 2
+      }
+      if (sum(ekat_4[,"aus"])==0) {tulos <- tulos -9}# Ei ausia: haitta kuin kolme pyyriä ilman domia
+      if (sum(ekat_4[,"nec"])==0) {tulos <- tulos -8}# Ei neciä: haitta hiukan pienempi kuin ausin puutteessa
+      tulos <- tulos + sum(ekat_4[, "special"]) # Itse käsin merkityt arvot spessuille
+      tulos <- tulos + sum(ekat_4[, "pre"])*0.1 + sum(kr[1:4, "pro"])*0.1 # Sivuhyötyjä anarkkikorteista
+      sup_gov <- 0
+      for (tt in sort(ekat_4[,"cap"], decreasing=TRUE)) { # DOM-pyyriä pienemmät pyyrit ovat hyviä
+        tulos <- tulos + sup_gov * length(which(ekat_4[,"cap"]==tt))
+        if (length(which(ekat_4[which(ekat_4[,"dom"]==2),"cap"]==tt))>0) {
+          sup_gov <- sup_gov + 1
         }
+      }
     }
-    return(tulos)
+  }
+  tulos <- tulos / n
+  return(tulos)
 }
