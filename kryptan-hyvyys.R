@@ -24,7 +24,7 @@ kryptan_hyvyys <- function(krypta, n=10) {
       tulos <- tulos + sum(ekat_4[, "special"]) # Itse käsin merkityt arvot spessuille
       tulos <- tulos + sum(ekat_4[, "pre"])*0.1 + sum(kr[1:4, "pro"])*0.1 # Sivuhyötyjä anarkkikorteista
       sup_gov <- 0
-      for (tt in sort(ekat_4[,"cap"], decreasing=TRUE)) { # DOM-pyyriä pienemmät pyyrit ovat hyviä
+      for (tt in unique(sort(ekat_4[,"cap"], decreasing=TRUE))) { # DOM-pyyriä pienemmät pyyrit ovat hyviä (sup-Govern-ketju)
         tulos <- tulos + sup_gov * length(which(ekat_4[,"cap"]==tt))
         if (length(which(ekat_4[which(ekat_4[,"dom"]==2),"cap"]==tt))>0) {
           sup_gov <- sup_gov + 1
