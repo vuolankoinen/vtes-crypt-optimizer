@@ -52,7 +52,7 @@ iter <- 100
    if (tt %in% seq(0,max(10,iter),min(200,iter/10))) {cat("Suoritettu iteraatioista",tt,"/",iter,"\n")}
    haastajat <- parhaat
    for (ss in 1:length(haastajat)) {
-     haastajat[[ss]] <- muuntele(haastajat[[ss]], c(parhaat,haastajat), nrow(krypta)
+     haastajat[[ss]] <- muuntele(haastajat[[ss]], c(parhaat,haastajat), nrow(krypta))
    }
    kaikki <- c(haastajat, parhaat)
    hyvyydet  <- numeric(length(kaikki))
