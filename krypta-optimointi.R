@@ -1,52 +1,66 @@
 ## 
 set.seed(134)
-setwd("Kryptasimulaatio")
 source("krypta.R", encoding="utf-8")
-
 source("kryptan-hyvyys.R", encoding="utf-8")
 
-montako_rinnakkaista_kokeiltavana <- 3
+montako_rinnakkaista_kokeiltavana <- 6
 
 parhaat <- list()
 indeksit <- c()
 for (tt in 1:montako_rinnakkaista_kokeiltavana) {
-  indeksit  <- sample(1:nrow(krypta), 12, replace=TRUE)
-  parhaat[[tt]] <- krypta[indeksit,]
+  parhaat[[tt]] <- sort(sample(1:nrow(krypta), 12, replace=TRUE))
+}
+
+## Funktio, joka tarkastaa, onko vektori listassa
+on <- function(vektori, lista) {
+  tulos <- FALSE
+  for (tt in 1:length(lista)) {
+    if (!tulos) {
+      tulos <- all(lista[[tt]]==vektori)
+    }
+  }
+  return(tulos)
 }
 
 ## Funktio, joka muuntelee kryptaa satunnaisesti
-muuntele  <- function(kr_vanha, pyyrit) {
-  kr <- kr_vanha
-  for (tt in 1:sample(1:4,1)) {
-    if (runif(1)<0.05) { # Suurennetaan kryptaa
-      uusi <- sample(1:nrow(pyyrit),1)
-      kr <- rbind(kr, pyyrit[uusi,])
-    } else {
-      if (nrow(kr)>12 && runif(1)<0.05) { # Otetaan kryptasta pois
-        pois <- sample(1:nrow(kr),1)
-        kr <- kr[-pois,]
+muuntele  <- function(muunneltava, kokeillut, tarjokkaita=33) {
+  kr <- muunneltava
+  while (on(kr, kokeillut)) {
+    for (tt in 1:sample(1:4,1)) {
+      if (runif(1)<0.05) { # Suurennetaan kryptaa
+        uusi <- sample(1:tarjokkaita,1)
+        kr <- c(kr, uusi)
       } else {
-        pois <- sample(1:nrow(kr),1)
-        uusi <- sample(1:nrow(pyyrit),1)
-        kr[pois,] <- pyyrit[uusi,]
+        if (length(kr)>12 && runif(1)<0.05) { # Otetaan kryptasta pois
+          pois <- sample(1:length(kr),1)
+          kr <- kr[-pois]
+        } else {
+          pois <- sample(1:length(kr),1)
+          uusi <- sample(1:tarjokkaita,1)
+          kr[pois] <- uusi
+        }
       }
+      kr <- sort(kr)
     }
   }
   return(kr)
 }
 
 ## Optimointisilmukka
-
-for (tt in 1:100) {
-  haastajat <- parhaat
-  for (ss in 1:length(haastajat)) {
-    haastajat[[ss]] <- muuntele(haastajat[[ss]], krypta)
-  }
-  kaikki <- c(haastajat, parhaat)
-  hyvyydet  <- numeric(length(kaikki))
-  for (ss in 1:length(kaikki)) {
-    hyvyydet[ss] <- kryptan_hyvyys(kaikki[[ss]], 100)
-  }
-  kaikki <- kaikki[order(hyvyydet, decreasing=TRUE)]
-  parhaat <- kaikki[1:montako_rinnakkaista_kokeiltavana]
+iter <- 100
+ for (tt in 1:iter) {
+   if (tt %in% seq(0,max(10,iter),min(200,iter/10))) {cat("Suoritettu iteraatioista",tt,"/",iter,\n")}
+   haastajat <- parhaat
+   for (ss in 1:length(haastajat)) {
+     haastajat[[ss]] <- muuntele(haastajat[[ss]], c(parhaat,haastajat), 33)
+   }
+   kaikki <- c(haastajat, parhaat)
+   hyvyydet  <- numeric(length(kaikki))
+   for (ss in 1:length(kaikki)) {
+     hyvyydet[ss] <- kryptan_hyvyys(krypta[kaikki[[ss]],], 500)
+   }
+   kaikki <- kaikki[order(hyvyydet, decreasing=TRUE)]
+   parhaat <- kaikki[1:montako_rinnakkaista_kokeiltavana]
 }
+kryptaehdotukset <- lapply(parhaat,function(x){krypta[x,]})
+save(kryptaehdotukset, file = "kryptaehdotukset.Rdat")
