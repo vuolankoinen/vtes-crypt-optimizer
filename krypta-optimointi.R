@@ -1,9 +1,10 @@
 ## 
-set.seed(134)
+set.seed(seed <- 413)
+iter <- 0 #
 source("krypta.R", encoding="utf-8")
 source("kryptan-hyvyys.R", encoding="utf-8")
 
-montako_rinnakkaista_kokeiltavana <- 4
+montako_rinnakkaista_kokeiltavana <- 3
 
 parhaat <- list()
 indeksit <- c()
@@ -47,20 +48,22 @@ muuntele  <- function(muunneltava, kokeillut, tarjokkaita=33) {
 }
 
 ## Optimointisilmukka
-iter <- 100
- for (tt in 1:iter) {
-   if (tt %in% seq(0,max(10,iter),min(200,iter/10))) {cat("Suoritettu iteraatioista",tt,"/",iter,"\n")}
-   haastajat <- parhaat
-   for (ss in 1:length(haastajat)) {
-     haastajat[[ss]] <- muuntele(haastajat[[ss]], c(parhaat,haastajat), nrow(krypta))
-   }
-   kaikki <- c(haastajat, parhaat)
-   hyvyydet  <- numeric(length(kaikki))
-   for (ss in 1:length(kaikki)) {
-     hyvyydet[ss] <- kryptan_hyvyys(krypta[kaikki[[ss]],], 500)
-   }
-   kaikki <- kaikki[order(hyvyydet, decreasing=TRUE)]
-   parhaat <- kaikki[1:montako_rinnakkaista_kokeiltavana]
+aloitusaika <- proc.time()[3] #
+while (proc.time()[3]-aloitusaika<3200) { #
+  iter <- iter+1 #
+  haastajat <- c(parhaat, parhaat, parhaat)
+  for (ss in 1:length(haastajat)) {
+    haastajat[[ss]] <- muuntele(haastajat[[ss]], c(parhaat,haastajat), nrow(krypta))
+  }
+  kaikki <- c(haastajat, parhaat)
+  hyvyydet  <- numeric(length(kaikki))
+  for (ss in 1:length(kaikki)) {
+    hyvyydet[ss] <- kryptan_hyvyys(krypta[kaikki[[ss]],], 1000)
+  }
+  kaikki <- kaikki[order(hyvyydet, decreasing=TRUE)]
+  parhaat <- kaikki[1:montako_rinnakkaista_kokeiltavana]
 }
 kryptaehdotukset <- lapply(parhaat,function(x){krypta[x,]})
-save(kryptaehdotukset, file = "kryptaehdotukset.Rdat")
+save(kryptaehdotukset, file = paste0(seed, "-", iter, "-kryptaehdotukset.Rdat"))
+
+#tiedostot <- list.files(pattern = "-krypt")
