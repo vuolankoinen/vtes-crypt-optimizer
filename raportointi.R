@@ -43,7 +43,7 @@ raportointi <- function(krypta, iter = 10000) {
     kr <- krypta[koe,]
     ekat_4 <- unique(kr[1:4,]) # Tuplat eivät auta
     { # Arviointi
-      hyvyys[1] <- hyvyys[1] + 1.2*sum(10-ekat_4[, "cap"]) # Pienemmät on parempia
+      hyvyys[1] <- hyvyys[1] + 0.8*sum(10-ekat_4[, "cap"]) # Pienemmät on parempia
       hyvyys[2] <- hyvyys[2] + sum(ekat_4[, "dom"]) # Enemmän domia on parempi
       hyvyys[2] <- hyvyys[2] + length(which(ekat_4[, "dom"]!=0)) # Ylipäätään dom
       hyvyys[4] <- hyvyys[4] + sum(ekat_4[, "tha"])  # Enemmän thaa on parempi
