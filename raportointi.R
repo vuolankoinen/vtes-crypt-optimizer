@@ -2,6 +2,7 @@
 
 ## Funktion raportointi keräämien tietojen sanallistamista.
 tulosten_purku <- function(raportoitavat_tapaukset, osuudet) {
+  cat("Kryptan hyvyys: ", sum(osuudet), "\n")
   cat("\nMikä osuus kryptan hyvyydestä syntyi mistäkin lähteestä:\n")
   osuudet<-osuudet/sum(osuudet)*100
   cat(osuudet[1], " %  vampyyrien koko\n")
@@ -22,7 +23,6 @@ tulosten_purku <- function(raportoitavat_tapaukset, osuudet) {
   cat (raportoitavat_tapaukset[5], "Tuplat vampyyrista\n")
   cat (raportoitavat_tapaukset[6], "Vain yhtä tai kahta kokoa\n")
   cat (raportoitavat_tapaukset[7], "Ei alle 6-capia\n")
-  cat("Kryptan hyvyys: ", sum(osuudet), "\n")
 }
 
 ## Palauttaa koenostojen parhaan ja huonoimman aloituskryptan listana, sekä joidenkin tapahtumien taajuuden.
