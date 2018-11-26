@@ -8,7 +8,7 @@ kryptan_hyvyys <- function(krypta, n=100) {
     kr <- krypta[koe,]
     ekat_4 <- unique(kr[1:4,]) # Tuplat eivät auta
     { # Varsinainen arviointi
-      tulos <- tulos + 1.5*sum(10-ekat_4[, "cap"]) # Pienemmät on parempia
+      tulos <- tulos + 0.8*sum(10-ekat_4[, "cap"]) # Pienemmät on parempia
       tulos <- tulos + sum(ekat_4[, "dom"]) # Enemmän domia on parempi
       tulos <- tulos + length(which(ekat_4[, "dom"]!=0)) # Ylipäätään dom
       tulos <- tulos + sum(ekat_4[, "tha"])*1  # Enemmän thaa on parempi
